@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Creadora de preguntas, objetivos e hipótesis de investigación de alcance descriptivo y correlacional, bivariados y multivariados. Escuela Profesional de Administración, UNASAM.">
+<title>Creadora de Preguntas, Objetivos e Hipótesis · UNASAM</title>
+<style>
+  :root {
+    --azul: #14284b; --azul2: #22437a; --dorado: #c9a227;
+    --fondo: #eef2f7; --borde: #d6dde8; --texto: #1d2433; --suave: #6b7487;
+    --ok: #1e7d4f; --warn: #b7791f; --error: #c0392b;
+    --v0: #2563eb; --v1: #db2777; --v2: #7c3aed; --v3: #0891b2; --v4: #ca8a04;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; background: var(--fondo); color: var(--texto); }
+
+  header { background: linear-gradient(120deg, var(--azul), var(--azul2)); color: #fff; padding: 28px 20px 64px; text-align: center; }
+  header .sello { display: inline-block; border: 1px solid rgba(255,255,255,.35); padding: 4px 12px; border-radius: 20px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--dorado); }
+  header h1 { margin: 10px 0 6px; font-size: 28px; }
+  header p { margin: 0; opacity: .88; font-size: 15px; }
+
+  main { max-width: 1200px; margin: -42px auto 30px; padding: 0 16px; }
+  .grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: #fff; border-radius: 14px; box-shadow: 0 6px 20px rgba(20,40,75,.08); padding: 22px 24px; margin-bottom: 18px; }
+  .card h2 { font-size: 16px; margin: 0 0 14px; color: var(--azul); display: flex; align-items: center; gap: 10px; }
+  .paso { background: var(--azul); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .subt { font-size: 12.5px; font-weight: 700; color: var(--suave); text-transform: uppercase; letter-spacing: .5px; margin: 16px 0 8px; }
+  .ayuda { font-size: 12.5px; color: var(--suave); margin: 6px 0 0; line-height: 1.45; }
+
+  /* Tarjetas de selección */
+  .opciones { display: grid; gap: 10px; }
+  .op2 { grid-template-columns: 1fr 1fr; }
+  .op4 { grid-template-columns: 1fr 1fr; }
+  .opcion { border: 2px solid var(--borde); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .25s; }
+  .opcion:hover { border-color: var(--azul2); }
+  .opcion input { display: none; }
+  .opcion b { display: block; font-size: 14.5px; color: var(--azul); }
+  .opcion span { font-size: 12.5px; color: var(--suave); }
+  .opcion .sigla { float: right; background: var(--azul); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
+  .opcion.activo { border-color: var(--azul); background: #f2f6fc; box-shadow: inset 4px 0 0 var(--dorado); }
+
+  /* Modelo del autor */
+  .modelo { margin-top: 12px; border: 1px solid var(--borde); border-radius: 10px; padding: 14px; background: #fcfdff; font-size: 13px; line-height: 1.5; }
+  .modelo h3 { margin: 0 0 8px; font-size: 14px; color: var(--azul); }
+  .modelo .dato { margin: 4px 0; }
+  .modelo .dato b { color: var(--azul2); }
+  .modelo table { margin-top: 10px; font-size: 12.5px; }
+  .modelo th { padding: 6px 8px; font-size: 12px; }
+  .modelo td { padding: 6px 8px; background: #fff; border: 1px solid #eef1f6; }
+  .modelo td:first-child { font-weight: 700; color: var(--azul); width: 90px; }
+  .pendiente { color: var(--warn); font-weight: 600; }
+  .cita { margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 3px solid var(--dorado); border-radius: 6px; font-style: italic; }
+
+  /* Buscador en el libro */
+  .buscador-libro { margin-top: 14px; border: 1px dashed var(--azul2); border-radius: 10px; padding: 12px 14px; background: #f7f9fc; }
+  .buscador-libro .subt { margin-top: 0; }
+  .archivo { display: inline-block; cursor: pointer; margin-right: 8px; padding: 8px 14px; }
+  .resultado-libro { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 13px; line-height: 1.5; }
+  .resultado-libro .pag { font-weight: 700; color: var(--azul); font-size: 12px; }
+  .resultado-libro mark { background: #ffe58a; padding: 0 2px; }
+
+  /* Variables */
+  .var-bloque { border: 1px solid var(--borde); border-left: 5px solid; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .var-cab { display: grid; grid-template-columns: 44px 1fr 86px 34px; gap: 6px; align-items: center; }
+  .rol { font-size: 12px; font-weight: 700; color: #fff; border-radius: 6px; text-align: center; padding: 7px 0; }
+  .var-bloque textarea { margin-top: 6px; min-height: 46px; }
+  .tipo-estudio { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; background: #fff5d6; color: #8a6d00; margin-left: auto; }
+
+  .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .completo { grid-column: 1 / 3; }
+  label.lbl { display: block; font-size: 12.5px; font-weight: 600; color: var(--suave); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+  .fila { display: flex; gap: 6px; }
+  input[type=text], input[type=number], select, textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--borde); border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; }
+  textarea { resize: vertical; min-height: 62px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--azul2); box-shadow: 0 0 0 3px #dbe6f7; }
+  select.art { font-size: 12.5px; color: var(--suave); background: #f7f9fc; }
+  .fila select.art { width: 86px; flex-shrink: 0; }
+  details { margin-top: 14px; border-top: 1px dashed var(--borde); padding-top: 12px; }
+  summary { cursor: pointer; font-weight: 600; color: var(--azul2); font-size: 14px; }
+  .solo-desc, .solo-corr { display: none; }
+  body.desc .solo-desc, body.corr .solo-corr { display: block; }
+  .check-linea { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .check-linea input { width: auto; }
+
+  .botones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  button { border: none; border-radius: 8px; padding: 10px 16px; font-size: 14px; font-family: inherit; cursor: pointer; transition: transform .1s, background .2s; }
+  button:active { transform: scale(.97); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-pri { background: var(--azul); color: #fff; font-weight: 600; }
+  .btn-pri:hover { background: var(--azul2); }
+  .btn-sec { background: #e8edf5; color: var(--azul); }
+  .btn-sec:hover { background: #dbe3ef; }
+  .btn-peligro { background: #fbeaea; color: var(--error); }
+  .btn-mini { padding: 5px 10px; font-size: 12.5px; }
+  .btn-x { background: #fbeaea; color: var(--error); padding: 7px 0; width: 34px; }
+
+  /* Revisión */
+  .checks { list-style: none; padding: 0; margin: 0; }
+  .checks li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f0f2f6; font-size: 13.5px; }
+  .checks li:last-child { border-bottom: none; }
+  .ico { width: 20px; height: 20px; border-radius: 50%; color: #fff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ico.ok { background: var(--ok); } .ico.warn { background: var(--warn); } .ico.err { background: var(--error); }
+  .puntaje { font-size: 30px; font-weight: 700; color: var(--azul); }
+  .puntaje small { font-size: 14px; color: var(--suave); font-weight: 400; }
+  .resumen-esquema { font-size: 13px; background: #f7f9fc; border-radius: 8px; padding: 10px 12px; margin-top: 12px; line-height: 1.6; }
+
+  /* Matriz */
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { background: var(--azul); color: #fff; text-align: left; padding: 9px 10px; font-weight: 600; }
+  th:first-child { border-radius: 8px 0 0 0; } th:last-child { border-radius: 0 8px 0 0; }
+  td { padding: 9px 10px; border-bottom: 1px solid #eef1f6; vertical-align: top; }
+  .matriz th { text-align: center; }
+  .matriz td { line-height: 1.45; }
+  .matriz td.nivel { font-weight: 700; color: var(--azul); text-align: center; white-space: nowrap; background: #f2f6fc; }
+  .matriz tr.general td { background: #fffbea; }
+  .matriz .h0 { display: block; margin-top: 6px; color: var(--suave); font-size: 12.5px; }
+  .ocultar-h0 .h0 { display: none; }
+  .barra-matriz { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13.5px; }
+  .ref { margin-top: 12px; font-size: 12.5px; color: var(--suave); background: #f7f9fc; border-radius: 8px; padding: 10px 12px; border-left: 3px solid var(--dorado); }
+  .vacio-res { text-align: center; color: var(--suave); padding: 20px; }
+  .badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; display: inline-block; margin: 1px 0; }
+  .badge.descriptivo { background: #e6f6ef; color: #1e7d4f; }
+  .badge.correlacional { background: #e6efff; color: #2563eb; }
+  .badge.autor { background: #fff5d6; color: #8a6d00; }
+
+  /* Fundamentos y créditos */
+  .fundamentos { font-size: 13.5px; line-height: 1.6; }
+  .fundamentos h3 { font-size: 14px; color: var(--azul); margin: 14px 0 4px; }
+  .fundamentos ul { margin: 4px 0; padding-left: 20px; }
+  .referencias p { padding-left: 28px; text-indent: -28px; margin: 6px 0; font-size: 13px; }
+  .creditos { background: var(--azul); color: #dfe7f5; border-radius: 14px; padding: 22px 24px; font-size: 13.5px; line-height: 1.7; }
+  .creditos h2 { color: var(--dorado); font-size: 16px; margin: 0 0 10px; }
+  .creditos b { color: #fff; }
+  .creditos .foto { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--dorado); float: right; margin-left: 12px; }
+
+  .aviso { color: var(--error); font-weight: 600; font-size: 14px; margin-top: 10px; min-height: 18px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--azul); color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.2); transition: transform .35s; z-index: 10; }
+  .toast.ver { transform: translateX(-50%) translateY(0); }
+  @keyframes aparecer { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  #resultados > * { animation: aparecer .4s ease; }
+
+  @media print {
+    body { background: #fff; }
+    header { padding: 10px; background: none; color: #000; }
+    header .sello, .no-print, .botones, button, .barra-matriz { display: none !important; }
+    main { margin: 0; }
+    .card { box-shadow: none; border: 1px solid #ccc; }
+    .creditos { background: none; color: #000; border: 1px solid #ccc; }
+    .creditos b, .creditos h2 { color: #000; }
+  }
+</style>
+</head>
+<body class="corr">
+
+<header>
+  <span class="sello">Escuela Profesional de Administración · UNASAM</span>
+  <h1>Creadora de Preguntas, Objetivos e Hipótesis</h1>
+  <p>Matriz general y específica de alcance descriptivo y correlacional, bivariada y multivariada, según el autor de referencia</p>
+</header>
+
+<main>
+  <div class="grid">
+    <!-- ================= COLUMNA IZQUIERDA ================= -->
+    <div>
+      <div class="card no-print">
+        <h2><span class="paso">1</span> Enfoque del estudio</h2>
+
+        <div class="subt" style="margin-top:0">Alcance</div>
+        <div class="opciones op2">
+          <label class="opcion">
+            <input type="radio" name="alcance" value="descriptivo">
+            <b>Descriptivo</b><span>Especifica propiedades y características de las variables.</span>
+          </label>
+          <label class="opcion activo">
+            <input type="radio" name="alcance" value="correlacional" checked>
+            <b>Correlacional</b><span>Conoce la relación o grado de asociación entre variables.</span>
+          </label>
+        </div>
+
+        <div class="subt">Autor de referencia</div>
+        <div class="opciones op4" id="tarjetasAutores"></div>
+        <div class="modelo" id="modeloAutor"></div>
+
+        <!-- Buscador dentro del libro -->
+        <div class="buscador-libro">
+          <div class="subt">Sustento: buscar en el libro del autor (PDF)</div>
+          <label class="btn-sec archivo">📄 Cargar PDF del libro
+            <input type="file" id="pdfLibro" accept="application/pdf" hidden>
+          </label>
+          <span id="estadoPdf" class="ayuda">Ningún libro cargado para este autor.</span>
+          <div class="fila" style="margin-top:10px">
+            <select id="temaBusq" style="width:190px; flex-shrink:0">
+              <option value="hipotesis">Hipótesis</option>
+              <option value="pregunta">Pregunta / problema</option>
+              <option value="objetivo">Objetivos</option>
+            </select>
+            <input type="text" id="textoBusq" placeholder="O escribe tus palabras (separadas por comas)">
+            <button class="btn-pri btn-mini" onclick="buscarEnLibro()">Buscar</button>
+          </div>
+          <div id="resultadosLibro"></div>
+        </div>
+
+        <details id="detallesLibro">
+          <summary>Completar con el libro (cita, página y referencia)</summary>
+          <div class="campos" style="margin-top:12px">
+            <div class="completo">
+              <label class="lbl">Cita textual extraída del libro</label>
+              <textarea id="citaEdit" placeholder="Pega aquí el texto del autor que sustenta cómo formular la pregunta, el objetivo o la hipótesis"></textarea>
+            </div>
+            <div>
+              <label class="lbl">Capítulo / página</label>
+              <input type="text" id="pagEdit" placeholder="Ej.: cap. 6, p. 104">
+            </div>
+            <div>
+              <label class="lbl">Cita corta (APA 7)</label>
+              <input type="text" id="citaCortaEdit" placeholder="Ej.: Hernández et al., 2014">
+            </div>
+            <div class="completo">
+              <label class="lbl">Referencia completa (APA 7)</label>
+              <input type="text" id="refEdit">
+            </div>
+          </div>
+          <p class="ayuda">Se guarda en este navegador y aparece en la matriz, en el Word y en las referencias.</p>
+        </details>
+      </div>
+
+      <div class="card no-print">
+        <h2><span class="paso">2</span> Variables y dimensiones <span class="tipo-estudio" id="tipoEstudio">Bivariado</span></h2>
+        <div id="listaVars"></div>
+        <button class="btn-sec btn-mini" id="btnAgregar" onclick="agregarVariable()">+ Agregar variable</button>
+        <p class="ayuda" id="ayudaVars"></p>
+      </div>
+
+      <div class="card no-print">
+        <h2><span class="paso">3</span> Unidad de análisis, espacio, tiempo y opciones</h2>
+        <div class="campos">
+          <div>
+            <label class="lbl">Población</label>
+            <div class="fila">
+              <input type="text" id="poblacion" placeholder="trabajadores">
+              <select id="artPob" class="art"><option value="auto">auto</option><option>los</option><option>las</option><option>el</option><option>la</option><option value="">—</option></select>
+            </div>
+          </div>
+          <div>
+            <label class="lbl">Organización / empresa</label>
+            <div class="fila">
+              <input type="text" id="empresa" placeholder="Municipalidad Provincial de Huaraz">
+              <select id="artEmp" class="art"><option value="auto">auto</option><option>la</option><option>el</option><option>los</option><option>las</option><option value="">—</option></select>
+            </div>
+          </div>
+          <div>
+            <label class="lbl">Lugar</label>
+            <input type="text" id="lugar" placeholder="Huaraz">
+          </div>
+          <div>
+            <label class="lbl">Año</label>
+            <input type="number" id="anio" placeholder="2026">
+          </div>
+
+          <div class="completo solo-corr">
+            <label class="lbl">Los específicos correlacionales se forman con…</label>
+            <select id="modoEsp">
+              <option value="dimY">Cada variable con las dimensiones de la última variable (V1 – D1Vn, V1 – D2Vn…)</option>
+              <option value="dimX">Las dimensiones de cada variable con la última variable (D1V1 – Vn, D2V1 – Vn…)</option>
+            </select>
+            <p class="ayuda">En estudios multivariados se agregan primero las relaciones de cada variable con la última (V1 – Vn, V2 – Vn).</p>
+          </div>
+
+          <div class="completo solo-desc">
+            <label class="check-linea"><input type="checkbox" id="hipDesc"> Formular hipótesis descriptiva (pronóstico de un dato o valor)</label>
+            <div class="fila" style="margin-top:8px">
+              <label class="lbl" style="margin:9px 0 0; white-space:nowrap">Nivel pronosticado</label>
+              <select id="nivelDesc">
+                <option>alto</option><option>moderado</option><option>bajo</option><option>adecuado</option><option>inadecuado</option>
+              </select>
+            </div>
+            <p class="ayuda">En los estudios descriptivos solo se formula hipótesis cuando se pronostica un hecho, dato o valor; si no, la matriz lo indica.</p>
+          </div>
+        </div>
+
+        <div class="botones">
+          <button class="btn-pri" onclick="generar()">Generar y guardar</button>
+          <button class="btn-sec" onclick="ejemplo('bi')">Ejemplo bivariado</button>
+          <button class="btn-sec" onclick="ejemplo('multi')">Ejemplo multivariado</button>
+          <button class="btn-peligro" onclick="limpiar()">Limpiar</button>
+        </div>
+        <div class="aviso" id="aviso"></div>
+      </div>
+    </div>
+
+    <!-- ================= COLUMNA DERECHA ================= -->
+    <div>
+      <div class="card">
+        <h2><span class="paso">4</span> Revisión de coherencia y calidad</h2>
+        <div class="puntaje" id="puntaje">0<small> / 0 criterios</small></div>
+        <ul class="checks" id="checks"></ul>
+        <div class="resumen-esquema" id="esquema"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= RESULTADOS ================= -->
+  <div class="card">
+    <h2><span class="paso">5</span> Matriz de preguntas, objetivos e hipótesis</h2>
+    <div id="resultados"><div class="vacio-res">Presiona <b>Generar y guardar</b> para ver la matriz.</div></div>
+  </div>
+
+  <!-- ================= HISTORIAL ================= -->
+  <div class="card">
+    <h2><span class="paso">6</span> Historial</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>#</th><th>Alcance / autor</th><th>Pregunta general</th><th class="no-print">Acciones</th></tr></thead>
+        <tbody id="historial"></tbody>
+      </table>
+    </div>
+    <div class="botones no-print">
+      <button class="btn-sec" onclick="exportarWord()">Descargar en Word (.doc)</button>
+      <button class="btn-sec" onclick="exportarExcel()">Exportar a Excel (.csv)</button>
+      <button class="btn-sec" onclick="window.print()">Imprimir / PDF</button>
+      <button class="btn-peligro" onclick="borrarHistorial()">Vaciar historial</button>
+    </div>
+  </div>
+
+  <!-- ================= FUNDAMENTOS ================= -->
+  <div class="card fundamentos">
+    <h2><span class="paso">7</span> Fundamentos metodológicos</h2>
+    <h3>Coherencia entre pregunta, objetivo e hipótesis</h3>
+    <ul>
+      <li>Cada <b>pregunta</b> de investigación tiene su <b>objetivo</b> (redactado con un verbo en infinitivo) y, cuando corresponde, su <b>hipótesis</b> (respuesta tentativa a la pregunta).</li>
+      <li>Las preguntas, objetivos e hipótesis <b>generales</b> involucran a las variables; los <b>específicos</b> se desprenden de sus dimensiones.</li>
+    </ul>
+    <h3>Alcance descriptivo</h3>
+    <ul>
+      <li>Busca especificar propiedades y características de las variables en una población.</li>
+      <li>La hipótesis descriptiva solo se formula cuando se pronostica un hecho, dato o valor; en los demás casos el estudio no requiere hipótesis.</li>
+    </ul>
+    <h3>Alcance correlacional</h3>
+    <ul>
+      <li>Busca conocer la relación o el grado de asociación entre dos o más variables, sin afirmar causalidad.</li>
+      <li>Se formula la hipótesis de investigación (Hi) y la hipótesis nula (H0), que niega la relación.</li>
+    </ul>
+    <h3>Bivariado y multivariado</h3>
+    <ul>
+      <li><b>Bivariado:</b> dos variables. <b>Multivariado:</b> tres o más variables; los específicos relacionan cada variable con la última y con las dimensiones elegidas.</li>
+    </ul>
+    <h3>Referencias</h3>
+    <div class="referencias" id="referencias"></div>
+  </div>
+
+  <!-- ================= CRÉDITOS ================= -->
+  <section class="creditos" id="creditos"></section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Lector de PDF (PDF.js) para buscar dentro del libro -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* =========================================================
+   0. CRÉDITOS (edita aquí tus datos)
+   ========================================================= */
+const CREDITOS = {
+  autor: "Cadillo Aranda Rossmel Dario",
+  condicion: "Estudiante de la Escuela Profesional de Administración",
+  facultad: "Facultad de Administración y Turismo",
+  universidad: "Universidad Nacional Santiago Antúnez de Mayolo (UNASAM)",
+  curso: "",          // Ej.: "Metodología de la Investigación Científica"
+  docente: "",        // Ej.: "Dr. Nombre Apellido"
+  github: "",         // Ej.: "https://github.com/tu-usuario"
+  foto: "",           // Ej.: "foto.jpg" (sube la imagen al repositorio)
+  anio: 2026,
+  ia: "Desarrollado con asistencia de inteligencia artificial (Claude, Anthropic) y revisado por el autor."
+};
+
+/* =========================================================
+   1. AUTORES DE REFERENCIA
+   Lo marcado como "completar" se llena desde la app con el libro.
+   ========================================================= */
+const AUTORES = {
+  hs: {
+    sigla: "HS", nombre: "Hernández Sampieri", obra: "Metodología de la investigación",
+    citaCorta: "Hernández et al., 2014",
+    ref: "Hernández Sampieri, R., Fernández Collado, C. y Baptista Lucio, P. (2014). Metodología de la investigación (6.ª ed.). McGraw-Hill Education.",
+    ubicacion: "Cap. 3 «Planteamiento del problema» (preguntas y objetivos) y cap. 6 «Formulación de hipótesis» (p. 104: tipo de hipótesis según el alcance).",
+    idea: "El tipo de hipótesis depende del alcance: las descriptivas pronostican un hecho o dato; las correlacionales especifican la relación entre variables (del tipo «a mayor X, mayor Y»).",
+    pagina: "", cita: ""
+  },
+  avh: {
+    sigla: "AVH", nombre: "Arístides Vara Horna", obra: "Desde la idea hasta la sustentación",
+    citaCorta: "Vara-Horna, 2012",
+    ref: "Vara-Horna, A. A. (2012). Desde la idea hasta la sustentación: Siete pasos para una tesis exitosa. Un método efectivo para las ciencias empresariales. Instituto de Investigación de la Facultad de Ciencias Administrativas y Recursos Humanos, Universidad de San Martín de Porres.",
+    ubicacion: "Hipótesis: pp. 159–165 (coherencia problema-objetivo-hipótesis, p. 161); formulación del problema: p. 180; objetivos: pp. 184–189.",
+    idea: "La hipótesis es una respuesta tentativa al problema y se sustenta en los antecedentes y las bases teóricas; problema, objetivo e hipótesis deben ser coherentes entre sí.",
+    pagina: "", cita: ""
+  },
+  cv: {
+    sigla: "CV", nombre: "C. Vara", obra: "Completar título de la obra",
+    citaCorta: "Vara, s. f.",
+    ref: "Vara, C. (completar año). Completar título de la obra. Completar editorial.",
+    ubicacion: "Completar capítulo y páginas.",
+    idea: "",
+    pagina: "", cita: ""
+  },
+  lv: {
+    sigla: "LV", nombre: "Luis Villanueva", obra: "Completar título de la obra",
+    citaCorta: "Villanueva, s. f.",
+    ref: "Villanueva, L. (completar año). Completar título de la obra. Completar editorial.",
+    ubicacion: "Completar capítulo y páginas.",
+    idea: "",
+    pagina: "", cita: ""
+  }
+};
+
+const COLORES = ["var(--v0)", "var(--v1)", "var(--v2)", "var(--v3)", "var(--v4)"];
+const MAX_VARS = 5;
+const $ = id => document.getElementById(id);
+let historial = [];
+let ultimo = null;
+let personal = {};
+try { personal = JSON.parse(localStorage.getItem("oph_autores")) || {}; } catch (e) { personal = {}; }
+const datosAutor = k => ({ ...AUTORES[k], ...(personal[k] || {}) });
+const refPendiente = a => /completar/i.test(a.ref);
+const citaFormateada = a => a.cita ? `«${a.cita}» (${a.citaCorta}${a.pagina ? ", " + a.pagina : ""})` : "";
+
+/* =========================================================
+   2. FUNCIONES DE APOYO DE REDACCIÓN
+   ========================================================= */
+const leer = id => $(id).value.trim();
+const min = t => t.charAt(0).toLowerCase() + t.slice(1);
+const may = t => t.charAt(0).toUpperCase() + t.slice(1);
+const normalizar = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+const escapar = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const marcado = name => document.querySelector(`input[name="${name}"]:checked`).value;
+const esSigla = t => /\b[A-ZÁÉÍÓÚÑ]{2,}\b/.test(t);
+
+const MASCULINAS_EN_A = ["clima", "sistema", "problema", "programa", "tema", "dia", "mapa", "idioma", "esquema", "dilema", "planeta", "carisma", "estigma", "paradigma"];
+function articuloAuto(texto) {
+  const p = normalizar(texto.split(" ")[0] || "");
+  if (!p) return "el";
+  if (p.endsWith("sis")) return p === "analisis" ? "el" : "la";
+  if (p.endsWith("s")) return (p.endsWith("as") || /(ciones|siones|dades)$/.test(p)) ? "las" : "los";
+  if (MASCULINAS_EN_A.includes(p)) return "el";
+  if (/(a|cion|sion|dad|tad|tud|umbre|ez)$/.test(p)) return "la";
+  return "el";
+}
+const articuloDe = (valor, texto) => valor === "auto" ? articuloAuto(texto) : valor;
+const conArt = (art, txt) => art ? `${art} ${txt}` : txt;
+function prep(p, art, txt) {
+  if (art === "el" && p === "de") return `del ${txt}`;
+  if (art === "el" && p === "a") return `al ${txt}`;
+  return art ? `${p} ${art} ${txt}` : `${p} ${txt}`;
+}
+const conj = siguiente => /^h?i(?![aeou])/.test(normalizar(siguiente)) ? "e" : "y";
+function unirLista(textos) {
+  if (textos.length <= 1) return textos.join("");
+  return textos.slice(0, -1).join(", ") + " " + conj(textos[textos.length - 1]) + " " + textos[textos.length - 1];
+}
+
+// Un término (variable o dimensión) con todas sus formas gramaticales
+function termino(art, txt) {
+  return { t: conArt(art, txt), de: prep("de", art, txt), en: prep("en", art, txt), con: prep("con", art, txt), plural: art === "los" || art === "las", nombre: txt };
+}
+// Varios términos juntos: «el A y la B», «del A y de la B»…
+function compuesto(terminos) {
+  if (terminos.length === 1) return terminos[0];
+  return {
+    t: unirLista(terminos.map(x => x.t)), de: unirLista(terminos.map(x => x.de)),
+    en: unirLista(terminos.map(x => x.en)), con: unirLista(terminos.map(x => x.con)),
+    plural: true, nombre: terminos.map(x => x.nombre).join(", ")
+  };
+}
+const listaDim = txt => txt.split(/[\n,;]+/).map(t => min(t.trim())).filter(Boolean);
+
+/* =========================================================
+   3. VARIABLES (BLOQUES DINÁMICOS)
+   ========================================================= */
+function agregarVariable(nombre = "", dims = "", art = "auto") {
+  const lista = $("listaVars");
+  if (lista.children.length >= MAX_VARS) return;
+  const b = document.createElement("div");
+  b.className = "var-bloque";
+  b.innerHTML = `
+    <div class="var-cab">
+      <span class="rol"></span>
+      <input type="text" class="v-nombre" placeholder="Nombre de la variable" value="${escapar(nombre)}">
+      <select class="art v-art"><option value="auto">auto</option><option>el</option><option>la</option><option>los</option><option>las</option><option value="">—</option></select>
+      <button class="btn-x" title="Quitar variable">✕</button>
+    </div>
+    <textarea class="v-dims" placeholder="Dimensiones (separadas por comas o una por línea)">${escapar(dims)}</textarea>`;
+  b.querySelector(".v-art").value = art;
+  b.querySelector(".btn-x").onclick = () => { if (lista.children.length > minVars()) { b.remove(); refrescarVars(); } };
+  b.querySelectorAll("input, select, textarea").forEach(el => el.addEventListener("input", actualizar));
+  lista.appendChild(b);
+  refrescarVars();
+}
+const minVars = () => marcado("alcance") === "descriptivo" ? 1 : 2;
+
+function refrescarVars() {
+  const bloques = [...$("listaVars").children], n = bloques.length, alcance = marcado("alcance");
+  bloques.forEach((b, i) => {
+    const rol = b.querySelector(".rol");
+    rol.textContent = `V${i + 1}`;
+    rol.style.background = COLORES[i];
+    b.style.borderLeftColor = COLORES[i];
+    b.querySelector(".btn-x").disabled = n <= minVars();
+  });
+  $("btnAgregar").disabled = n >= MAX_VARS;
+  $("tipoEstudio").textContent = n === 1 ? "Univariado" : n === 2 ? "Bivariado" : `Multivariado (${n} variables)`;
+  $("ayudaVars").textContent = alcance === "descriptivo"
+    ? "Cada dimensión genera una pregunta, un objetivo y, si corresponde, una hipótesis específica."
+    : "La última variable (Vn) es la variable de contraste para formar los específicos.";
+  actualizar();
+}
+
+function leerVariables() {
+  return [...$("listaVars").children].map((b, i) => {
+    const txt = min(b.querySelector(".v-nombre").value.trim());
+    const art = articuloDe(b.querySelector(".v-art").value, txt);
+    return { i, txt, art, dims: listaDim(b.querySelector(".v-dims").value), term: termino(art, txt) };
+  }).filter(v => v.txt);
+}
+
+/* =========================================================
+   4. DATOS Y CONTEXTO
+   ========================================================= */
+function datos() {
+  const d = {
+    alcance: marcado("alcance"), autor: marcado("autor"),
+    vars: leerVariables(),
+    pob: min(leer("poblacion")), emp: leer("empresa"),
+    lugar: leer("lugar"), anio: leer("anio"),
+    modoEsp: $("modoEsp").value,
+    hipDesc: $("hipDesc").checked, nivel: $("nivelDesc").value
+  };
+  d.aPob = articuloDe($("artPob").value, d.pob);
+  d.aEmp = articuloDe($("artEmp").value, d.emp);
+  d.lugarDuplicado = !!(d.emp && d.lugar && normalizar(d.emp).includes(normalizar(d.lugar)));
+  return d;
+}
+
+// « en los trabajadores de la Municipalidad Provincial de Huaraz, 2026»
+function contexto(d) {
+  let t = "";
+  if (d.pob) t += " " + prep("en", d.aPob, d.pob);
+  if (d.emp) t += " " + prep(d.pob ? "de" : "en", d.aEmp, d.emp);
+  if (d.lugar && !d.lugarDuplicado) t += ", " + d.lugar;
+  if (d.anio) t += ", " + d.anio;
+  return t;
+}
+
+/* =========================================================
+   5. FORMULACIÓN SEGÚN AUTOR Y ALCANCE
+   ========================================================= */
+// Descriptivo: A = término (variable o dimensión)
+function formularDescriptivo(autor, A, ctx, especifico, d) {
+  const se = A.plural ? "se presentan" : "se presenta";
+  const es = A.plural ? "son" : "es";
+  const hip = d.hipDesc
+    ? { hi: `El nivel ${A.de}${ctx} es ${d.nivel}.`, h0: `El nivel ${A.de}${ctx} no es ${d.nivel}.` }
+    : { hi: "No se formula: el estudio descriptivo no pronostica un hecho, dato o valor.", h0: "—" };
+  const f = {
+    hs:  { p: `¿Cuál es el nivel ${A.de}${ctx}?`,                o: `${especifico ? "Identificar" : "Determinar"} el nivel ${A.de}${ctx}.` },
+    avh: { p: `¿Cómo ${es} ${A.t}${ctx}?`,                         o: `${especifico ? "Identificar" : "Describir"} ${especifico ? "el nivel " + A.de : A.t}${ctx}.` },
+    cv:  { p: `¿Cuál es la situación ${A.de}${ctx}?`,              o: `${especifico ? "Caracterizar" : "Analizar la situación de"} ${especifico ? A.t : A.t}${ctx}.` },
+    lv:  { p: `¿De qué manera ${se} ${A.t}${ctx}?`,                o: `${especifico ? "Conocer" : "Determinar"} de qué manera ${se} ${A.t}${ctx}.` }
+  }[autor];
+  if (autor === "cv" && !especifico) f.o = `Analizar la situación ${A.de}${ctx}.`;
+  return { ...f, ...hip };
+}
+
+// Xs = lista de términos asociados (1 o más); Y = término de contraste
+function formularCorrelacional(autor, Xs, Y, ctx, especifico) {
+  const X = compuesto(Xs);
+  const entre = unirLista([...Xs.map(x => x.t), Y.t]);
+  const rel = X.plural ? "se relacionan" : "se relaciona";
+  switch (autor) {
+    case "hs": return {
+      p:  `¿Qué relación existe entre ${entre}${ctx}?`,
+      o:  `${especifico ? "Establecer" : "Determinar"} la relación entre ${entre}${ctx}.`,
+      hi: `A mayor nivel ${X.de}, mayor nivel ${Y.de}${ctx}.`,
+      h0: `No existe relación entre ${entre}${ctx}.`
+    };
+    case "avh": return {
+      p:  `¿Cuál es la relación entre ${entre}${ctx}?`,
+      o:  `${especifico ? "Identificar" : "Determinar"} la relación entre ${entre}${ctx}.`,
+      hi: `Existe una relación significativa entre ${entre}${ctx}.`,
+      h0: `No existe una relación significativa entre ${entre}${ctx}.`
+    };
+    case "cv": return {
+      p:  `¿Existe relación entre ${entre}${ctx}?`,
+      o:  `${especifico ? "Evaluar" : "Analizar"} la relación entre ${entre}${ctx}.`,
+      hi: `Existe una relación directa y significativa entre ${entre}${ctx}.`,
+      h0: `No existe una relación directa y significativa entre ${entre}${ctx}.`
+    };
+    default: return {
+      p:  `¿De qué manera ${X.t} ${rel} ${Y.con}${ctx}?`,
+      o:  `${especifico ? "Analizar" : "Establecer"} de qué manera ${X.t} ${rel} ${Y.con}${ctx}.`,
+      hi: `${may(X.t)} ${rel} significativamente ${Y.con}${ctx}.`,
+      h0: `${may(X.t)} no ${rel} significativamente ${Y.con}${ctx}.`
+    };
+  }
+}
+
+// Arma toda la matriz: fila general + filas específicas
+function matriz(d) {
+  const ctx = contexto(d), V = d.vars, filas = [];
+  const mayus = f => ({ ...f, p: "¿" + may(f.p.slice(1)) });
+
+  if (d.alcance === "descriptivo") {
+    filas.push({ nivel: "General", ...formularDescriptivo(d.autor, compuesto(V.map(v => v.term)), ctx, false, d) });
+    V.forEach(v => {
+      if (v.dims.length) v.dims.forEach(dim => {
+        const D = { ...termino("la", `dimensión ${dim} ${v.term.de}`), nombre: dim };
+        filas.push({ nivel: "", ...formularDescriptivo(d.autor, D, ctx, true, d) });
+      });
+      else if (V.length > 1) filas.push({ nivel: "", ...formularDescriptivo(d.autor, v.term, ctx, true, d) });
+    });
+  } else {
+    const X = V.slice(0, -1), Y = V[V.length - 1];
+    filas.push({ nivel: "General", ...formularCorrelacional(d.autor, X.map(v => v.term), Y.term, ctx, false) });
+    if (V.length > 2) X.forEach(x => filas.push({ nivel: "", ...formularCorrelacional(d.autor, [x.term], Y.term, ctx, true) }));
+    if (d.modoEsp === "dimY") {
+      X.forEach(x => Y.dims.forEach(dim => filas.push({ nivel: "", ...formularCorrelacional(d.autor, [x.term], termino(articuloAuto(dim), dim), ctx, true) })));
+    } else {
+      X.forEach(x => x.dims.forEach(dim => filas.push({ nivel: "", ...formularCorrelacional(d.autor, [termino(articuloAuto(dim), dim)], Y.term, ctx, true) })));
+    }
+  }
+  let k = 0;
+  return filas.map(f => mayus({ ...f, nivel: f.nivel || `Específico ${++k}` }));
+}
+
+/* =========================================================
+   6. REVISIÓN DE COHERENCIA Y CALIDAD (EN TIEMPO REAL)
+   ========================================================= */
+function actualizar() {
+  const d = datos(), a = datosAutor(d.autor);
+  const n = d.vars.length, minimo = minVars();
+  const nombres = d.vars.map(v => normalizar(v.txt));
+  const repetidas = nombres.some((v, i) => nombres.indexOf(v) !== i);
+  const filas = n >= minimo ? matriz(d) : [];
+  const especificos = Math.max(filas.length - 1, 0);
+
+  let dimsOk, dimsTxt;
+  if (d.alcance === "descriptivo") {
+    const conDims = d.vars.filter(v => v.dims.length).length;
+    dimsOk = n && conDims === n ? "ok" : conDims ? "warn" : "err";
+    dimsTxt = conDims === n && n ? "Todas las variables tienen dimensiones" : "Agrega las dimensiones de cada variable";
+  } else {
+    const base = d.modoEsp === "dimY" ? (n ? d.vars[n - 1].dims.length : 0) : d.vars.slice(0, -1).reduce((s, v) => s + v.dims.length, 0);
+    dimsOk = base >= 2 ? "ok" : base === 1 ? "warn" : "err";
+    dimsTxt = base ? `${base} dimensión(es) usadas para los específicos` : (d.modoEsp === "dimY" ? "Agrega las dimensiones de la última variable" : "Agrega las dimensiones de las variables V1…Vn-1");
+  }
+  const anioNum = parseInt(d.anio, 10), anioActual = new Date().getFullYear();
+
+  const criterios = [
+    [n >= minimo && !repetidas ? "ok" : "err", n < minimo ? `Se necesitan al menos ${minimo} variable(s)` : repetidas ? "Hay variables repetidas" : `${n} variable(s) de estudio`],
+    [dimsOk, dimsTxt],
+    [filas.length ? "ok" : "err", filas.length ? `Coherencia: ${filas.length} preguntas, ${filas.length} objetivos ${d.alcance === "descriptivo" && !d.hipDesc ? "(sin hipótesis por ser descriptivo)" : "y " + filas.length + " hipótesis"} · 1 general + ${especificos} específicos` : "Aún no se puede armar la matriz"],
+    [d.alcance === "correlacional" || !d.hipDesc || filas.length ? "ok" : "warn",
+      d.alcance === "correlacional" ? "Hipótesis correlacional con Hi y H0" : d.hipDesc ? `Hipótesis descriptiva con pronóstico (nivel ${d.nivel})` : "Descriptivo sin pronóstico: no se formula hipótesis"],
+    [d.pob ? "ok" : "warn", d.pob ? "Indica la población" : "Falta indicar la población"],
+    [d.emp && !esSigla(d.emp) ? "ok" : "warn", !d.emp ? "Falta la organización o empresa" : esSigla(d.emp) ? "La organización tiene siglas: escribe el nombre completo" : "Organización con nombre completo"],
+    [d.lugar ? "ok" : "err", !d.lugar ? "Falta el lugar" : d.lugarDuplicado ? `Se evitó repetir «${d.lugar}»` : "Indica el lugar"],
+    [anioNum >= 2000 && anioNum <= anioActual + 2 ? "ok" : "err", anioNum ? "Año válido" : "Falta el año"],
+    [refPendiente(a) ? "warn" : "ok", refPendiente(a) ? `Completa la referencia de ${a.nombre} (paso 1)` : `Referencia de ${a.nombre} completa`],
+    [a.cita ? "ok" : "warn", a.cita ? "Cita del libro que sustenta la formulación" : "Agrega una cita del libro como sustento (buscador del paso 1)"]
+  ];
+  const simbolo = { ok: "✓", warn: "!", err: "✕" };
+  $("checks").innerHTML = criterios.map(([e, t]) => `<li><span class="ico ${e}">${simbolo[e]}</span>${escapar(t)}</li>`).join("");
+  $("puntaje").innerHTML = `${criterios.filter(c => c[0] === "ok").length}<small> / ${criterios.length} criterios</small>`;
+
+  // Esquema de la matriz (como en la pizarra: V – D)
+  const V = d.vars;
+  let esquema = "";
+  if (n >= minimo) {
+    if (d.alcance === "descriptivo") {
+      esquema = `<b>General:</b> ${V.map(v => v.txt).join(", ")}<br><b>Específicos:</b> ` +
+        (V.flatMap(v => v.dims.length ? v.dims.map((x, j) => `D${j + 1}V${v.i + 1}`) : (V.length > 1 ? [`V${v.i + 1}`] : [])).join(" · ") || "—");
+    } else {
+      const ult = `V${n}`;
+      const pares = V.length > 2 ? V.slice(0, -1).map(v => `V${v.i + 1}–${ult}`) : [];
+      const dimsE = d.modoEsp === "dimY"
+        ? V.slice(0, -1).flatMap(v => V[n - 1].dims.map((x, j) => `V${v.i + 1}–D${j + 1}${ult}`))
+        : V.slice(0, -1).flatMap(v => v.dims.map((x, j) => `D${j + 1}V${v.i + 1}–${ult}`));
+      esquema = `<b>General:</b> ${V.slice(0, -1).map(v => "V" + (v.i + 1)).join(", ")}–${ult}<br><b>Específicos:</b> ${[...pares, ...dimsE].join(" · ") || "—"}`;
+    }
+  }
+  $("esquema").innerHTML = esquema || "Completa las variables para ver el esquema de la matriz.";
+  renderModelo();
+}
+
+/* =========================================================
+   7. GENERAR LA MATRIZ
+   ========================================================= */
+function generar() {
+  const d = datos();
+  $("aviso").textContent = "";
+  if (d.vars.length < minVars() || !d.lugar || !d.anio) {
+    $("aviso").textContent = `Completa como mínimo: ${minVars()} variable(s), el lugar y el año.`;
+    return;
+  }
+  const filas = matriz(d), a = datosAutor(d.autor);
+  const tipo = d.vars.length === 1 ? "univariado" : d.vars.length === 2 ? "bivariado" : "multivariado";
+  ultimo = { alcance: d.alcance, autor: d.autor, tipo, filas, conH0: d.alcance === "correlacional" || d.hipDesc };
+
+  $("resultados").innerHTML = `
+    <div class="barra-matriz">
+      <span class="badge ${d.alcance}">${d.alcance}</span>
+      <span class="badge autor">${tipo} · según ${escapar(a.nombre)}</span>
+      ${ultimo.conH0 ? `<label><input type="checkbox" id="verH0" checked onchange="$('tablaMatriz').classList.toggle('ocultar-h0', !this.checked)"> Mostrar hipótesis nula (H0)</label>` : ""}
+      <button class="btn-sec btn-mini" onclick="copiarMatriz()">Copiar matriz (pegar en Word/Excel)</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="matriz" id="tablaMatriz">
+        <thead><tr><th>Nivel</th><th>Pregunta</th><th>Objetivo</th><th>Hipótesis</th></tr></thead>
+        <tbody>
+          ${filas.map(f => `
+            <tr class="${f.nivel === "General" ? "general" : ""}">
+              <td class="nivel">${f.nivel}</td>
+              <td>${escapar(f.p)}</td>
+              <td>${escapar(f.o)}</td>
+              <td>${ultimo.conH0 ? "<b>Hi:</b> " : ""}${escapar(f.hi)}${ultimo.conH0 ? `<span class="h0"><b>H0:</b> ${escapar(f.h0)}</span>` : ""}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="ref">
+      <b>Formulación según ${escapar(a.nombre)}</b> (${escapar(a.ubicacion)}${a.pagina ? "; " + escapar(a.pagina) : ""}).
+      ${a.idea ? escapar(a.idea) : ""}
+      ${a.cita ? `<div class="cita">${escapar(citaFormateada(a))}</div>` : ""}
+      <div style="margin-top:6px"><b>Referencia:</b> ${escapar(a.ref)}</div>
+    </div>`;
+
+  const clave = filas.map(f => f.p).join("|");
+  if (!historial.some(h => h.filas.map(f => f.p).join("|") === clave)) {
+    historial.unshift(ultimo);
+    guardarHistorial();
+  }
+  pintarHistorial();
+  avisar("Matriz generada y guardada");
+}
+
+/* =========================================================
+   8. COPIAR, AVISOS, HISTORIAL Y DESCARGAS
+   ========================================================= */
+function copiar(boton) { navigator.clipboard.writeText(boton.dataset.texto).then(() => avisar("Copiado al portapapeles")); }
+function copiarMatriz() {
+  if (!ultimo) return;
+  const conH0 = ultimo.conH0 && (!$("verH0") || $("verH0").checked);
+  const lineas = [["Nivel", "Pregunta", "Objetivo", "Hipótesis"].join("\t")];
+  ultimo.filas.forEach(f => lineas.push([f.nivel, f.p, f.o, (ultimo.conH0 ? "Hi: " : "") + f.hi + (conH0 ? " H0: " + f.h0 : "")].join("\t")));
+  navigator.clipboard.writeText(lineas.join("\n")).then(() => avisar("Matriz copiada: pégala en Word o Excel"));
+}
+function avisar(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("ver");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("ver"), 2000);
+}
+
+function guardarHistorial() { try { localStorage.setItem("oph_historial", JSON.stringify(historial)); } catch (e) {} }
+function cargarHistorial() { try { historial = JSON.parse(localStorage.getItem("oph_historial")) || []; } catch (e) { historial = []; } }
+function pintarHistorial() {
+  const tb = $("historial");
+  if (!historial.length) { tb.innerHTML = '<tr><td colspan="4" class="vacio-res">Aún no hay matrices guardadas.</td></tr>'; return; }
+  tb.innerHTML = historial.map((h, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><span class="badge ${h.alcance}">${h.alcance}</span><br><span class="badge autor">${escapar(AUTORES[h.autor].nombre)} · ${h.tipo}</span></td>
+      <td>${escapar(h.filas[0].p)}</td>
+      <td class="no-print" style="white-space:nowrap">
+        <button class="btn-sec btn-mini" onclick="copiar(this)" data-texto="${escapar(h.filas[0].p)}">Copiar</button>
+        <button class="btn-peligro btn-mini" onclick="quitar(${i})">✕</button>
+      </td>
+    </tr>`).join("");
+}
+function quitar(i) { historial.splice(i, 1); guardarHistorial(); pintarHistorial(); }
+function borrarHistorial() { historial = []; guardarHistorial(); pintarHistorial(); avisar("Historial vaciado"); }
+
+function descargar(contenido, nombre, tipo) {
+  const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
+  const a = document.createElement("a");
+  a.href = url; a.download = nombre; a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1500);
+  avisar(`«${nombre}» descargado en tu carpeta Descargas`);
+}
+
+function exportarExcel() {
+  if (!historial.length) { avisar("No hay matrices para exportar"); return; }
+  const celda = t => `"${String(t).replace(/"/g, '""')}"`;
+  const filas = [["N.º", "Alcance", "Tipo", "Autor", "Nivel", "Pregunta", "Objetivo", "Hipótesis (Hi)", "Hipótesis nula (H0)"]];
+  historial.forEach((h, i) => h.filas.forEach(f => filas.push([i + 1, h.alcance, h.tipo, AUTORES[h.autor].nombre, f.nivel, f.p, f.o, f.hi, f.h0])));
+  descargar("\uFEFF" + filas.map(f => f.map(celda).join(";")).join("\r\n"), "matriz_OPH.csv", "text/csv;charset=utf-8");
+}
+
+function exportarWord() {
+  if (!historial.length) { avisar("No hay matrices para descargar"); return; }
+  const usados = [...new Set(historial.map(h => h.autor))];
+  const secciones = historial.map((h, i) => {
+    const a = datosAutor(h.autor);
+    return `
+      <h2>Matriz ${i + 1}: alcance ${h.alcance} (${h.tipo}), según ${escapar(a.nombre)}</h2>
+      <table>
+        <tr><th style="width:11%">Nivel</th><th style="width:29%">Pregunta</th><th style="width:29%">Objetivo</th><th style="width:31%">Hipótesis</th></tr>
+        ${h.filas.map(f => `<tr><td><b>${f.nivel}</b></td><td>${escapar(f.p)}</td><td>${escapar(f.o)}</td>
+          <td>${h.conH0 ? "<b>Hi:</b> " : ""}${escapar(f.hi)}${h.conH0 ? `<br><b>H0:</b> ${escapar(f.h0)}` : ""}</td></tr>`).join("")}
+      </table>
+      <p class="nota"><b>Formulación según ${escapar(a.nombre)}</b> (${escapar(a.ubicacion)}${a.pagina ? "; " + escapar(a.pagina) : ""}). ${escapar(a.idea || "")}</p>
+      ${a.cita ? `<p class="nota"><i>${escapar(citaFormateada(a))}</i></p>` : ""}`;
+  }).join('<br style="page-break-before:always">');
+  const refs = usados.map(k => `<p class="refp">${escapar(datosAutor(k).ref)}</p>`).join("");
+
+  const doc = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40" lang="es-PE">
+<head><meta charset="UTF-8"><title>Matriz de preguntas, objetivos e hipótesis</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+<style>
+  @page Section1 { size: 841.9pt 595.3pt; mso-page-orientation: landscape; margin: 2.54cm; }
+  div.Section1 { page: Section1; }
+  body, p, td, th, h1, h2 { font-family: "Times New Roman", serif; mso-ansi-language: ES-PE; mso-fareast-language: ES-PE; }
+  body { font-size: 12pt; } h1 { font-size: 14pt; text-align: center; } h2 { font-size: 12pt; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #000; padding: 5pt; font-size: 11pt; vertical-align: top; }
+  th { background: #d9e2f3; } .nota { font-size: 10pt; }
+  .refp { margin-left: 36pt; text-indent: -36pt; }
+</style></head>
+<body lang="ES-PE"><div class="Section1">
+  <h1>Matriz de preguntas, objetivos e hipótesis de investigación</h1>
+  ${secciones}
+  <h2>Referencias</h2>${refs}
+  <p class="nota">Elaborado con la Creadora de Preguntas, Objetivos e Hipótesis — ${escapar(CREDITOS.autor)}, ${escapar(CREDITOS.universidad)}, ${CREDITOS.anio}.</p>
+</div></body></html>`;
+  descargar("\uFEFF" + doc, "matriz_OPH.doc", "application/msword");
+}
+
+/* =========================================================
+   9. AUTOR: MODELO, CITA Y BUSCADOR EN EL LIBRO (PDF)
+   El PDF se lee en tu computadora; no se sube a ningún sitio.
+   ========================================================= */
+function pintarTarjetasAutores() {
+  $("tarjetasAutores").innerHTML = Object.entries(AUTORES).map(([k, a], i) => `
+    <label class="opcion ${i === 0 ? "activo" : ""}">
+      <input type="radio" name="autor" value="${k}" ${i === 0 ? "checked" : ""}>
+      <span class="sigla">${a.sigla}</span><b>${escapar(a.nombre)}</b><span>${escapar(a.obra)}</span>
+    </label>`).join("");
+  document.querySelectorAll('input[name="autor"]').forEach(r => r.onchange = () => { refrescarAutor(); if (ultimo) generar(); });
+}
+
+function renderModelo() {
+  const k = marcado("autor"), a = datosAutor(k), alc = marcado("alcance");
+  const ctx = " en [población] de [organización], [lugar], [año]";
+  const t = alc === "descriptivo"
+    ? formularDescriptivo(k, termino("", "[V]"), ctx, false, { hipDesc: true, nivel: "[nivel]" })
+    : formularCorrelacional(k, [termino("", "[V1]")], termino("", "[V2]"), ctx, false);
+  $("modeloAutor").innerHTML = `
+    <h3>Lo que plantea ${escapar(a.nombre)}</h3>
+    <div class="dato"><b>Obra:</b> ${refPendiente(a) ? `<span class="pendiente">${escapar(a.ref)}</span>` : escapar(a.ref)}</div>
+    <div class="dato"><b>Dónde está en el libro:</b> ${escapar(a.ubicacion)}</div>
+    ${a.pagina ? `<div class="dato"><b>Página de la cita:</b> ${escapar(a.pagina)}</div>` : ""}
+    ${a.idea ? `<div class="dato"><b>Idea clave:</b> ${escapar(a.idea)}</div>` : ""}
+    <table>
+      <tr><th colspan="2">Modelo de redacción (alcance ${alc})</th></tr>
+      <tr><td>Pregunta</td><td>${escapar(t.p)}</td></tr>
+      <tr><td>Objetivo</td><td>${escapar(t.o)}</td></tr>
+      <tr><td>Hipótesis</td><td>${escapar(t.hi)}</td></tr>
+    </table>
+    ${a.cita ? `<div class="cita">${escapar(citaFormateada(a))}</div>` : ""}`;
+}
+
+function refrescarAutor() {
+  document.querySelectorAll(".opcion").forEach(op => op.classList.toggle("activo", op.querySelector("input").checked));
+  const k = marcado("autor"), a = datosAutor(k);
+  $("citaEdit").value = a.cita; $("pagEdit").value = a.pagina;
+  $("citaCortaEdit").value = a.citaCorta; $("refEdit").value = a.ref;
+  const libro = LIBROS[k];
+  $("estadoPdf").textContent = libro ? `✓ ${libro.nombre} (${libro.paginas.length} páginas) listo para buscar.` : "Ningún libro cargado para este autor.";
+  $("resultadosLibro").innerHTML = "";
+  actualizar();
+  pintarReferencias();
+}
+
+function guardarPersonal() {
+  const k = marcado("autor");
+  personal[k] = { cita: leer("citaEdit"), pagina: leer("pagEdit"), citaCorta: leer("citaCortaEdit") || AUTORES[k].citaCorta, ref: leer("refEdit") || AUTORES[k].ref };
+  try { localStorage.setItem("oph_autores", JSON.stringify(personal)); } catch (e) {}
+  actualizar();
+  pintarReferencias();
+}
+
+const LIBROS = {};
+const TEMAS = {
+  hipotesis: {
+    descriptivo:   ["hipótesis descriptiva", "hipótesis descriptivas", "pronosticar", "pronostica"],
+    correlacional: ["hipótesis correlacional", "hipótesis correlacionales", "a mayor", "relación entre"],
+    comun:         ["formulación de hipótesis", "hipótesis de investigación", "hipótesis nula"]
+  },
+  pregunta: { comun: ["planteamiento del problema", "formulación del problema", "pregunta de investigación", "preguntas de investigación"] },
+  objetivo: { comun: ["objetivo general", "objetivos específicos", "objetivos de investigación", "objetivos de la investigación"] }
+};
+const normalizarLargo = t => t.split("").map(ch => ch.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().charAt(0) || ch).join("");
+
+async function cargarPDF(archivo) {
+  const autor = marcado("autor");
+  if (typeof pdfjsLib === "undefined") { $("estadoPdf").textContent = "No se pudo cargar el lector de PDF. Revisa tu conexión y recarga la página."; return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  try {
+    const pdf = await pdfjsLib.getDocument({ data: await archivo.arrayBuffer() }).promise;
+    const paginas = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const contenido = await (await pdf.getPage(i)).getTextContent();
+      paginas.push(contenido.items.map(it => it.str).join(" ").replace(/\s+/g, " "));
+      if (i % 10 === 0 || i === pdf.numPages) $("estadoPdf").textContent = `Leyendo el libro… página ${i} de ${pdf.numPages}`;
+    }
+    LIBROS[autor] = { nombre: archivo.name, paginas };
+    $("estadoPdf").textContent = `✓ ${archivo.name} (${pdf.numPages} páginas) listo para buscar.`;
+    if (!paginas.some(p => p.trim().length > 30)) $("estadoPdf").textContent += " Atención: el PDF parece escaneado (sin texto) y no se podrá buscar.";
+    buscarEnLibro();
+  } catch (e) {
+    $("estadoPdf").textContent = "No se pudo leer el PDF. Prueba con otro archivo.";
+  }
+}
+
+function buscarEnLibro() {
+  const autor = marcado("autor"), libro = LIBROS[autor], a = datosAutor(autor), zona = $("resultadosLibro");
+  const tema = $("temaBusq").value, alcance = marcado("alcance");
+  const propias = leer("textoBusq").split(",").map(t => t.trim()).filter(Boolean);
+  const terminos = propias.length ? propias : [...(TEMAS[tema][alcance] || []), ...TEMAS[tema].comun];
+  if (!libro) {
+    const g = `https://www.google.com/search?tbm=bks&q=${encodeURIComponent(a.nombre + " " + terminos.slice(0, 2).join(" "))}`;
+    zona.innerHTML = `<p class="ayuda">Carga el PDF del libro de ${escapar(a.nombre)} para buscar dentro de él. También puedes <a href="${g}" target="_blank" rel="noopener">buscar en Google Libros</a>.</p>`;
+    return;
+  }
+  const normTerm = terminos.map(normalizarLargo), hallazgos = [];
+  libro.paginas.forEach((texto, i) => {
+    const norm = normalizarLargo(texto);
+    let total = 0, primera = -1, largo = 0;
+    normTerm.forEach(t => {
+      let pos = norm.indexOf(t);
+      if (pos >= 0 && (primera < 0 || pos < primera)) { primera = pos; largo = t.length; }
+      while (pos >= 0) { total++; pos = norm.indexOf(t, pos + t.length); }
+    });
+    if (total) hallazgos.push({ pagina: i + 1, total, primera, largo, texto });
+  });
+  hallazgos.sort((x, y) => y.total - x.total);
+  if (!hallazgos.length) { zona.innerHTML = `<p class="ayuda">No se encontró «${escapar(terminos.join(", "))}» en el libro. Prueba con otras palabras.</p>`; return; }
+
+  const rango = h => [Math.max(0, h.primera - 220), Math.min(h.texto.length, h.primera + h.largo + 280)];
+  zona.innerHTML = `<p class="ayuda">${hallazgos.length} página(s) con coincidencias. Se muestran las más relevantes:</p>` +
+    hallazgos.slice(0, 12).map((h, n) => {
+      const [ini, fin] = rango(h);
+      const resaltado = escapar(h.texto.slice(ini, h.primera)) + "<mark>" + escapar(h.texto.slice(h.primera, h.primera + h.largo)) + "</mark>" + escapar(h.texto.slice(h.primera + h.largo, fin));
+      return `<div class="resultado-libro"><div class="pag">Página ${h.pagina} del PDF · ${h.total} coincidencia(s)</div>
+        ${ini > 0 ? "…" : ""}${resaltado}${fin < h.texto.length ? "…" : ""}
+        <br><button class="btn-sec btn-mini" data-n="${n}" style="margin-top:6px">Usar como cita</button></div>`;
+    }).join("");
+  zona.querySelectorAll("button[data-n]").forEach(b => b.onclick = () => {
+    const h = hallazgos[+b.dataset.n], [ini, fin] = rango(h);
+    $("citaEdit").value = h.texto.slice(ini, fin).trim();
+    $("pagEdit").value = `p. ${h.pagina} del PDF`;
+    $("detallesLibro").open = true;
+    guardarPersonal();
+    avisar("Cita agregada: recórtala a la oración que necesites");
+  });
+}
+
+/* =========================================================
+   10. REFERENCIAS, CRÉDITOS, EJEMPLOS E INICIO
+   ========================================================= */
+function pintarReferencias() {
+  const lista = Object.keys(AUTORES).map(k => datosAutor(k)).filter(a => !refPendiente(a))
+    .sort((x, y) => x.ref.localeCompare(y.ref, "es"));
+  $("referencias").innerHTML = lista.map(a => `<p>${escapar(a.ref)}</p>`).join("") +
+    Object.keys(AUTORES).map(k => datosAutor(k)).filter(refPendiente).map(a => `<p class="pendiente">${escapar(a.nombre)}: referencia por completar (paso 1).</p>`).join("");
+}
+
+function pintarCreditos() {
+  const c = CREDITOS;
+  $("creditos").innerHTML = `
+    ${c.foto ? `<img class="foto" src="${escapar(c.foto)}" alt="Foto de ${escapar(c.autor)}">` : ""}
+    <h2>Créditos</h2>
+    <div><b>Autor:</b> ${escapar(c.autor)} — ${escapar(c.condicion)}</div>
+    <div>${escapar(c.facultad)}, ${escapar(c.universidad)}</div>
+    ${c.curso ? `<div><b>Curso:</b> ${escapar(c.curso)}</div>` : ""}
+    ${c.docente ? `<div><b>Docente:</b> ${escapar(c.docente)}</div>` : ""}
+    ${c.github ? `<div><b>GitHub:</b> <a style="color:#fff" href="${escapar(c.github)}" target="_blank" rel="noopener">${escapar(c.github)}</a></div>` : ""}
+    <div style="margin-top:8px;opacity:.85">${escapar(c.ia)}</div>
+    <div style="opacity:.7">Huaraz, ${c.anio}</div>`;
+}
+
+function cambiarAlcance() {
+  const alc = marcado("alcance");
+  document.body.className = alc === "descriptivo" ? "desc" : "corr";
+  document.querySelectorAll('input[name="alcance"]').forEach(r => r.closest(".opcion").classList.toggle("activo", r.checked));
+  // El correlacional necesita al menos dos variables
+  while ($("listaVars").children.length < minVars()) agregarVariable();
+  refrescarVars();
+}
+
+function cargarVariables(lista) {
+  $("listaVars").innerHTML = "";
+  lista.forEach(v => agregarVariable(v[0], v[1] || ""));
+}
+
+function ejemplo(tipo) {
+  if (tipo === "bi") cargarVariables([
+    ["salario emocional", "conciliación trabajo-familia, reconocimiento, desarrollo profesional"],
+    ["satisfacción laboral", "condiciones de trabajo, relaciones interpersonales, realización personal"]]);
+  else cargarVariables([
+    ["liderazgo transformacional", "influencia idealizada, motivación inspiradora, estimulación intelectual"],
+    ["clima organizacional", "comunicación, trabajo en equipo"],
+    ["desempeño laboral", "productividad, calidad del trabajo"]]);
+  $("poblacion").value = "trabajadores";
+  $("empresa").value = "Municipalidad Provincial de Huaraz";
+  $("lugar").value = "Huaraz";
+  $("anio").value = "2026";
+  actualizar();
+  generar();
+}
+
+function limpiar() {
+  cargarVariables(marcado("alcance") === "descriptivo" ? [[""]] : [[""], [""]]);
+  ["poblacion", "empresa", "lugar", "anio"].forEach(id => $(id).value = "");
+  ["artPob", "artEmp"].forEach(id => $(id).value = "auto");
+  $("aviso").textContent = "";
+  $("resultados").innerHTML = '<div class="vacio-res">Presiona <b>Generar y guardar</b> para ver la matriz.</div>';
+  ultimo = null;
+  actualizar();
+}
+
+// Eventos
+document.querySelectorAll('input[name="alcance"]').forEach(r => r.onchange = () => { cambiarAlcance(); if (ultimo) generar(); });
+["poblacion", "artPob", "empresa", "artEmp", "lugar", "anio", "modoEsp", "hipDesc", "nivelDesc"].forEach(id => {
+  $(id).addEventListener("input", actualizar);
+  $(id).addEventListener("change", actualizar);
+});
+["citaEdit", "pagEdit", "citaCortaEdit", "refEdit"].forEach(id => $(id).addEventListener("input", guardarPersonal));
+$("pdfLibro").addEventListener("change", e => { if (e.target.files[0]) cargarPDF(e.target.files[0]); e.target.value = ""; });
+
+// Inicio
+pintarTarjetasAutores();
+cargarVariables([[""], [""]]);
+$("anio").value = new Date().getFullYear();
+cargarHistorial();
+pintarHistorial();
+pintarCreditos();
+cambiarAlcance();
+refrescarAutor();
+</script>
+</body>
+</html>
